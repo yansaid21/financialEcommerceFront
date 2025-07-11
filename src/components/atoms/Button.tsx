@@ -1,17 +1,18 @@
-// src/components/atoms/Button.tsx
 'use client'
 
 type Props = {
-  onClick?: () => void
   children: React.ReactNode
+  onClick?: () => void
+  type?: 'button' | 'submit'
   className?: string
 }
 
-export default function Button({ onClick, children, className = '' }: Props) {
+export default function Button({ children, onClick, type = 'button', className }: Props) {
   return (
     <button
+      type={type}
       onClick={onClick}
-      className={`px-6 py-3 rounded-md font-semibold transition shadow-md focus:outline-none ${className}`}
+      className={`px-4 py-2 rounded font-semibold ${className}`}
     >
       {children}
     </button>

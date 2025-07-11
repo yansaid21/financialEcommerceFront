@@ -5,6 +5,4 @@ export interface Transaction {
   amount: number
   isIncome: boolean
   date: string
-  createdAt: string
-  updatedAt: string
 }
