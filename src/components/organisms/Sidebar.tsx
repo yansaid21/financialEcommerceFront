@@ -2,9 +2,17 @@
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { getUserFromToken } from '@/utils/getUserFromToken'
 
 export default function Sidebar() {
   const router = useRouter()
+  const [username, setUsername] = useState('')
+
+  useEffect(() => {
+    const user = getUserFromToken()
+    if (user) setUsername(user.name)
+  }, [])
 
   const handleLogout = () => {
     localStorage.removeItem('token')
@@ -14,7 +22,7 @@ export default function Sidebar() {
   return (
     <aside className="w-64 bg-gradient-to-br from-indigo-600 via-purple-700 to-pink-600 text-white p-6 shadow-lg flex flex-col justify-between min-h-screen">
       <div>
-        <h2 className="text-2xl font-bold mb-8">💰 Mi Finanzas</h2>
+        <h2 className="text-2xl font-bold mb-8">👋 ¡Bienvenido, {username}!</h2>
         <nav className="flex flex-col gap-4 text-lg">
           <Link href="/dashboard">📊 Resumen</Link>
           <Link href="/dashboard/transactions">🧾 Transacciones</Link>

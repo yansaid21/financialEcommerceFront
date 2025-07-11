@@ -10,12 +10,21 @@ import { exportTransactionsToCSV } from '@/utils/exportToCSV'
 import { getUserIdFromToken } from '@/utils/getUserIdFromToken'
 
 
+
 export default function TransaccionesPage() {
+const [currentPage, setCurrentPage] = useState(1)
+const itemsPerPage = 5
 
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
   const [editing, setEditing] = useState<Transaction | null>(null)
+const totalPages = Math.ceil(transactions.length / itemsPerPage)
+
+const paginatedTransactions = transactions.slice(
+  (currentPage - 1) * itemsPerPage,
+  currentPage * itemsPerPage
+)
 
 const fetchTransactions = () => {
   const userId = getUserIdFromToken()
@@ -74,26 +83,54 @@ const fetchTransactions = () => {
         <p>Cargando transacciones...</p>
       ) : (
         <TransactionTable
-          transactions={transactions}
+          transactions={paginatedTransactions}
           onEdit={(tx) => {
             setEditing(tx)
             setShowForm(true)
           }}
           onDelete={handleDelete}
         />
+        
       )}
+      {totalPages > 1 && (
+  <div className="flex justify-center items-center gap-4 mt-6">
+    <Button
+      onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+      className="bg-gray-300 text-gray-800"
+      disabled={currentPage === 1}
+    >
+      ⬅ Anterior
+    </Button>
+
+    <span className="text-sm text-gray-700">
+      Página {currentPage} de {totalPages}
+    </span>
+
+    <Button
+      onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+      className="bg-gray-300 text-gray-800"
+      disabled={currentPage === totalPages}
+    >
+      Siguiente ➡
+    </Button>
+  </div>
+)}
+
       
 
 
 
-<Button
-  onClick={() => exportTransactionsToCSV(transactions)}
-  className="bg-yellow-400 text-black hover:bg-yellow-500"
->
-  Exportar CSV
-</Button>
+{transactions.length > 0 && (
+  <Button
+    onClick={() => exportTransactionsToCSV(transactions)}
+    className="bg-yellow-400 text-black hover:bg-yellow-500"
+  >
+    Exportar CSV
+  </Button>
+)}
 
-    </div>
+
+</div>
     
   )
 }
