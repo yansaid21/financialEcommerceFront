@@ -1,22 +1,28 @@
 'use client'
-
+import { handleOAuthRedirect } from '@/utils/auth'
 import { useEffect, useState } from 'react'
 import api from '@/services/api'
 import { Transaction } from '@/types/transaction'
 import Link from 'next/link'
+import { getUserIdFromToken } from '@/utils/getUserIdFromToken'
+
 
 export default function DashboardHome() {
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    const userId = 'b52c725f-92e6-452c-810a-deec5aba4aed' // temporal
+useEffect(() => {
+  handleOAuthRedirect()
 
-    api.get(`/transactions?userId=${userId}`)
-      .then((res) => setTransactions(res.data.transactions))
-      .catch((err) => console.error('Error al obtener transacciones:', err))
-      .finally(() => setLoading(false))
-  }, [])
+  const userId = getUserIdFromToken()
+  if (!userId) return
+
+  api.get(`/transactions?userId=${userId}`)
+    .then((res) => setTransactions(res.data.transactions))
+    .catch((err) => console.error('Error al obtener transacciones:', err))
+    .finally(() => setLoading(false))
+}, [])
+
 
   const totalIngresos = transactions
     .filter((t) => t.isIncome)

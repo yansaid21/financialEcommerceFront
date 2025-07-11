@@ -5,9 +5,8 @@ export function handleOAuthRedirect() {
   const token = url.searchParams.get('token')
 
   if (token) {
-    console.log("token al llega",token);
-    
+    console.log('Token recibido:', token)
     localStorage.setItem('token', token)
-    //window.location.href = '/dashboard'
+    window.history.replaceState({}, '', '/dashboard') // limpia la URL
   }
 }

@@ -7,20 +7,29 @@ import TransactionForm from '@/components/molecules/TransactionsForm'
 import TransactionTable from '@/components/organisms/TransactionsTable' 
 import Button from '@/components/atoms/Button'
 import { exportTransactionsToCSV } from '@/utils/exportToCSV'
+import { getUserIdFromToken } from '@/utils/getUserIdFromToken'
+
 
 export default function TransaccionesPage() {
+
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
   const [editing, setEditing] = useState<Transaction | null>(null)
 
-  const fetchTransactions = () => {
-    const userId = 'b52c725f-92e6-452c-810a-deec5aba4aed'
-    api.get(`/transactions?userId=${userId}`)
-      .then((res) => setTransactions(res.data.transactions))
-      .catch((err) => console.error('Error al obtener transacciones', err))
-      .finally(() => setLoading(false))
+const fetchTransactions = () => {
+  const userId = getUserIdFromToken()
+  if (!userId) {
+    console.warn('No se pudo obtener el ID del usuario.')
+    return
   }
+
+  api.get(`/transactions?userId=${userId}`)
+    .then((res) => setTransactions(res.data.transactions))
+    .catch((err) => console.error('Error al obtener transacciones', err))
+    .finally(() => setLoading(false))
+}
+
 
   useEffect(() => {
     fetchTransactions()

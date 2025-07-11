@@ -1,9 +1,10 @@
 'use client'
 
-import { Transaction } from '@/types/transaction'
 import { useState, useEffect } from 'react'
+import { Transaction } from '@/types/transaction'
 import api from '@/services/api'
 import Button from '@/components/atoms/Button'
+import { getUserIdFromToken } from '@/utils/getUserIdFromToken'
 
 type Props = {
   editing?: Transaction | null
@@ -23,17 +24,29 @@ export default function TransactionForm({ editing, onSuccess, onCancel }: Props)
       setAmount(editing.amount.toString())
       setDate(editing.date.slice(0, 10))
       setIsIncome(editing.isIncome)
+    } else {
+      setDescription('')
+      setAmount('')
+      setDate('')
+      setIsIncome(true)
     }
   }, [editing])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    const userId = getUserIdFromToken()
+    if (!userId) {
+      alert('Usuario no autenticado')
+      return
+    }
+
     const payload = {
       description,
       amount: Number(amount),
       date,
       isIncome,
-      userId: 'b52c725f-92e6-452c-810a-deec5aba4aed',
+      userId,
     }
 
     const method = editing ? 'patch' : 'post'
