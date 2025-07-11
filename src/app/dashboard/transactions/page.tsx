@@ -6,6 +6,7 @@ import { Transaction } from '@/types/transaction'
 import TransactionForm from '@/components/molecules/TransactionsForm' 
 import TransactionTable from '@/components/organisms/TransactionsTable' 
 import Button from '@/components/atoms/Button'
+import { exportTransactionsToCSV } from '@/utils/exportToCSV'
 
 export default function TransaccionesPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([])
@@ -72,6 +73,18 @@ export default function TransaccionesPage() {
           onDelete={handleDelete}
         />
       )}
+      
+
+
+
+<Button
+  onClick={() => exportTransactionsToCSV(transactions)}
+  className="bg-yellow-400 text-black hover:bg-yellow-500"
+>
+  Exportar CSV
+</Button>
+
     </div>
+    
   )
 }
