@@ -10,7 +10,7 @@ export function useAuth(protectedRoute = true) {
   useEffect(() => {
     const storedToken = localStorage.getItem('token')
     if (!storedToken && protectedRoute) {
-      //router.replace('/')
+      router.replace('/')
     } else {
       setToken(storedToken)
     }
